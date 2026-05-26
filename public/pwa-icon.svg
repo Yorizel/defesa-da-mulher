@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Bubble Garden icon">
+  <rect width="512" height="512" rx="112" fill="#6ee7b7"/>
+  <circle cx="178" cy="180" r="82" fill="#ffffff" opacity="0.82"/>
+  <circle cx="326" cy="156" r="54" fill="#dbeafe" opacity="0.92"/>
+  <circle cx="312" cy="324" r="108" fill="#a7f3d0" opacity="0.95"/>
+  <circle cx="144" cy="336" r="44" fill="#ffffff" opacity="0.72"/>
+  <path d="M147 154c16-25 49-37 78-27" stroke="#ffffff" stroke-width="22" stroke-linecap="round" opacity="0.75"/>
+  <path d="M268 281c22-35 68-51 107-36" stroke="#ffffff" stroke-width="26" stroke-linecap="round" opacity="0.75"/>
+</svg>

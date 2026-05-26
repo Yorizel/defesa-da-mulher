@@ -12,6 +12,18 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^6.3.8"
+    "@data-slot/dialog": "^0.2.166",
+    "@lucide/astro": "^1.16.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.3.8",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-static": "^1.16.0",
+    "simple-icons": "^16.21.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@vite-pwa/astro": "^1.2.0"
   }
 }
