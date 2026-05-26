@@ -28,28 +28,35 @@ import {
 } from "@lucide/astro"
 ---
 
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/pwa-icon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-		<meta name="theme-color" content="#0a1f1a" />
+		<meta name="theme-color" content="#67d8f5" />
 		<meta name="description" content="Um jogo simples de encaixar blocos coloridos." />
 		<meta name="generator" content={Astro.generator} />
 		<title>Jardim de Blocos</title>
 	</head>
-	<body class="game-bg flex min-h-svh flex-col items-center overflow-x-hidden p-3 text-emerald-50 antialiased sm:p-4">
+	<body class="game-bg min-h-svh overflow-x-hidden text-foreground antialiased">
 
-		<div class="game-wrapper my-auto inline-flex flex-col gap-2 sm:gap-2.5">
+		<div class="game-wrapper mx-auto flex min-h-svh w-full flex-col gap-3 px-3 py-3 sm:px-4">
 
-			<header class="flex items-center justify-between gap-4">
+			<header class="game-header flex items-center justify-between gap-4">
 				<div class="min-w-0">
-					<span class="text-[0.55rem] font-black uppercase tracking-[0.2em] text-emerald-400/40 sm:text-[0.65rem]">Jogo casual</span>
-					<h1 class="truncate text-base font-bold tracking-tight sm:text-xl">Jardim de Blocos</h1>
+					<h1 class="truncate text-base font-black tracking-tight sm:text-xl">Jardim de Blocos</h1>
 				</div>
-				<Button id="settingsButton" type="button" size="icon-sm" variant="ghost" class="shrink-0 rounded-full text-emerald-400/50 hover:bg-emerald-400/10 hover:text-emerald-300" aria-label="Configurações">
-					<Settings class="size-4" />
-				</Button>
+				<div class="header-actions">
+					<Button id="startButton" type="button" size="icon-sm" class="header-icon-btn bg-[#7a85ff] text-white" aria-label="Iniciar">
+						<Play class="size-4" />
+					</Button>
+					<Button id="pauseButton" type="button" size="icon-sm" variant="outline" class="header-icon-btn bg-[#fb7562] text-white" aria-label="Pausar">
+						<Pause class="size-4" />
+					</Button>
+					<Button id="settingsButton" type="button" size="icon-sm" variant="ghost" class="header-icon-btn bg-[#fff6d7] text-[#22655f]" aria-label="Configurações">
+						<Settings class="size-4" />
+					</Button>
+				</div>
 			</header>
 
 			<div class="game-layout" aria-label="Jardim de Blocos">
@@ -57,14 +64,14 @@ import {
 					<canvas id="gameCanvas" width="240" height="480" class="board-canvas block aspect-[1/2] rounded-lg sm:rounded-xl" aria-label="Tabuleiro do jogo"></canvas>
 					<div class="game-overlay show" id="gameOverlay">
 						<strong class="text-lg font-bold sm:text-xl">Jardim de Blocos</strong>
-						<span class="text-xs text-emerald-300/50 sm:text-sm">Toque em iniciar</span>
+						<span class="text-xs text-muted-foreground sm:text-sm">Toque em iniciar</span>
 					</div>
 				</div>
 
 				<aside class="sidebar" aria-live="polite">
 					<div class="sidebar-section">
 						<span class="sidebar-label">Próxima</span>
-						<canvas id="nextCanvas" width="96" height="96" class="next-canvas rounded-md bg-[#071f1a] sm:rounded-lg"></canvas>
+						<canvas id="nextCanvas" width="96" height="96" class="next-canvas rounded-xl bg-background"></canvas>
 					</div>
 
 					<div class="sidebar-divider"></div>
@@ -88,27 +95,16 @@ import {
 						</div>
 					</div>
 
-					<div class="sidebar-divider"></div>
-
-					<div class="sidebar-section sidebar-actions">
-						<Button id="startButton" type="button" class="sidebar-btn h-8 w-full bg-emerald-500 text-xs font-bold text-emerald-950 hover:bg-emerald-400 sm:h-9 sm:text-sm">
-							<Play class="size-3.5 sm:size-4" /> <span class="btn-label">Iniciar</span>
-						</Button>
-						<Button id="pauseButton" type="button" variant="outline" class="sidebar-btn h-8 w-full border-emerald-500/20 text-xs text-emerald-300 hover:bg-emerald-500/10 hover:text-emerald-200 sm:h-9 sm:text-sm">
-							<Pause class="size-3.5 sm:size-4" /> <span class="btn-label">Pausar</span>
-						</Button>
-					</div>
-
-					<p class="keyboard-hint">← → ↓ mover · ↑ girar<br/>Espaço queda · P pausa</p>
+					<p class="keyboard-hint">← → ↓ mover · ↑ girar · Espaço queda</p>
 				</aside>
 			</div>
 
 			<div class="controls-bar">
-				<div class="grid grid-cols-5 gap-1 sm:gap-1.5">
+				<div class="controls-pad">
 					<button type="button" class="ctrl-btn" aria-label="Mover para esquerda" data-action="left">
 						<ArrowLeft class="ctrl-icon" />
 					</button>
-					<button type="button" class="ctrl-btn" aria-label="Girar peça" data-action="rotate">
+					<button type="button" class="ctrl-btn ctrl-rotate" aria-label="Girar peça" data-action="rotate">
 						<RotateCw class="ctrl-icon" />
 					</button>
 					<button type="button" class="ctrl-btn" aria-label="Mover para direita" data-action="right">
@@ -125,15 +121,15 @@ import {
 		</div>
 
 		<aside class="settings-panel fixed inset-0 z-40 grid place-items-end bg-black/50 p-3 opacity-0 backdrop-blur-sm transition-opacity sm:p-4" id="settingsPanel" aria-hidden="true">
-			<div class="settings-card w-full max-w-md translate-y-4 rounded-2xl border border-emerald-500/12 bg-[#0a1f1a]/95 p-4 shadow-2xl backdrop-blur transition-transform sm:p-5">
+			<div class="settings-card w-full max-w-md translate-y-4 rounded-2xl border-2 border-border bg-card p-4 text-card-foreground shadow-2xl transition-transform sm:p-5">
 				<div class="mb-4 flex items-center justify-between">
 					<h2 class="text-lg font-bold">Configurações</h2>
-					<Button id="closeSettingsButton" type="button" variant="ghost" size="sm" class="text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300">
+					<Button id="closeSettingsButton" type="button" variant="ghost" size="sm" class="text-foreground hover:bg-accent hover:text-accent-foreground">
 						<X class="size-4" /> Fechar
 					</Button>
 				</div>
 				<Dialog>
-					<DialogTrigger id="reportButton" type="button" class="w-full bg-emerald-500 font-bold text-emerald-950 hover:bg-emerald-400">Reportar problema</DialogTrigger>
+					<DialogTrigger id="reportButton" type="button" class="w-full border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">Reportar problema</DialogTrigger>
 					<DialogContent>
 						<form id="reportForm" class="grid gap-4">
 							<DialogHeader>
@@ -148,7 +144,7 @@ import {
 							<DialogFooter>
 								<DialogClose id="cancelReportButton" type="button" variant="outline">Cancelar</DialogClose>
 								<DialogClose id="reportCloseButton" type="button" class="hidden">Fechar</DialogClose>
-								<Button type="submit" class="bg-emerald-500 font-bold text-emerald-950 hover:bg-emerald-400">
+								<Button type="submit" class="border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">
 									<Send class="size-4" /> Enviar
 								</Button>
 							</DialogFooter>
@@ -158,7 +154,7 @@ import {
 			</div>
 		</aside>
 
-		<div class="toast fixed bottom-5 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full border border-emerald-500/15 bg-[#0a1f1a]/95 px-5 py-2.5 text-sm font-bold opacity-0 shadow-lg backdrop-blur transition" id="toast" role="status" aria-live="polite"></div>
+		<div class="toast fixed bottom-5 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full border-2 border-border bg-card px-5 py-2.5 text-sm font-bold text-card-foreground opacity-0 shadow-lg transition" id="toast" role="status" aria-live="polite"></div>
 
 		<script>
 			const canvas = document.querySelector<HTMLCanvasElement>('#gameCanvas')!;
@@ -181,17 +177,17 @@ import {
 			const COLS = 10;
 			const ROWS = 20;
 			const BLOCK = 24;
-			const BG = '#071f1a';
+			const BG = '#9f493d';
 
 			const COLORS = [
 				'#000000',
-				'#2dd4bf',
-				'#60a5fa',
-				'#f97316',
-				'#facc15',
-				'#4ade80',
-				'#c084fc',
-				'#fb7185',
+				'#62c7ff',
+				'#8357f5',
+				'#ff9f43',
+				'#ffd85c',
+				'#76e06f',
+				'#ff6b8a',
+				'#45d5c8',
 			];
 
 			const PIECES = [
@@ -305,7 +301,7 @@ import {
 				ctx.fillStyle = BG;
 				ctx.fillRect(0, 0, COLS, ROWS);
 
-				ctx.strokeStyle = 'rgba(16,185,129,0.04)';
+				ctx.strokeStyle = 'rgba(255,244,217,0.08)';
 				ctx.lineWidth = 0.02;
 				for (let x = 0; x <= COLS; x++) {
 					ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, ROWS); ctx.stroke();
@@ -432,9 +428,9 @@ import {
 					overlay.classList.add('show');
 					overlay.innerHTML = `
 						<strong class="text-xl font-bold sm:text-2xl">Fim de jogo</strong>
-						<span class="tabular-nums text-base text-emerald-300/60">${score} pontos</span>
+						<span class="tabular-nums text-base text-muted-foreground">${score} pontos</span>
 						${isNewRecord ? '<span class="text-xs font-semibold text-amber-400">Novo recorde!</span>' : ''}
-						<span class="mt-1 text-xs text-emerald-400/30">Toque em iniciar</span>
+						<span class="mt-1 text-xs text-muted-foreground">Toque em iniciar</span>
 					`;
 				}
 			}
@@ -493,7 +489,7 @@ import {
 				paused = !paused;
 				setPauseLabel(paused ? 'Continuar' : 'Pausar');
 				overlay.classList.toggle('show', paused);
-				if (paused) overlay.innerHTML = '<strong class="text-lg font-bold">Pausado</strong><span class="text-xs text-emerald-300/50">Toque em continuar</span>';
+				if (paused) overlay.innerHTML = '<strong class="text-lg font-bold">Pausado</strong><span class="text-xs text-muted-foreground">Toque em continuar</span>';
 			}
 
 			function showToast(msg: string) {
@@ -588,55 +584,117 @@ import {
 
 	.game-bg {
 		background:
-			radial-gradient(ellipse 500px 350px at 25% 8%, rgba(16, 185, 129, 0.07) 0%, transparent 100%),
-			radial-gradient(ellipse 400px 300px at 80% 92%, rgba(16, 185, 129, 0.05) 0%, transparent 100%),
-			#0a1f1a;
+			radial-gradient(circle at 13% 13%, #ffffff 0 1.15rem, transparent 1.2rem),
+			radial-gradient(circle at 23% 11%, #ffffff 0 1.45rem, transparent 1.5rem),
+			radial-gradient(circle at 31% 14%, #ffffff 0 1rem, transparent 1.05rem),
+			radial-gradient(circle at 84% 12%, #ffffff 0 1.15rem, transparent 1.2rem),
+			radial-gradient(circle at 74% 15%, #ffffff 0 1rem, transparent 1.05rem),
+			radial-gradient(circle at 15% 83%, #62d887 0 3.5rem, transparent 3.55rem),
+			radial-gradient(circle at 85% 84%, #5acb7d 0 3.9rem, transparent 3.95rem),
+			linear-gradient(#67d8f5 0 52%, #77e0ab 52% 72%, #43c982 72%);
+		background-attachment: fixed;
 	}
 
 	.game-wrapper {
-		padding-bottom: max(0, env(safe-area-inset-bottom));
-		width: 100%;
-		max-width: fit-content;
+		max-width: 23rem;
+		padding-top: max(0.35rem, env(safe-area-inset-top));
+		padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+	}
+
+	.game-header {
+		border: 0;
+		background: transparent;
+		color: #11666c;
+		padding: 0 0.25rem;
+		text-shadow: 0 1px 0 #fff6d7;
+	}
+
+	.header-actions {
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	.header-icon-btn {
+		border: 2px solid #1b8f84 !important;
+		border-radius: 999px;
+		box-shadow: 0 3px 0 #1b8f84;
 	}
 
 	/* ── Game layout: board + sidebar ── */
 
 	.game-layout {
-		display: flex;
-		gap: 0.5rem;
-		align-items: stretch;
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0;
+		justify-content: center;
+		justify-items: center;
+		margin-inline: auto;
+		padding-inline: 2.25rem;
 	}
 
 	/* ── Board ── */
 
 	.board-frame {
 		position: relative;
-		flex-shrink: 0;
-		border-radius: 0.85rem;
-		border: 1.5px solid rgba(16, 185, 129, 0.18);
-		background: #071f1a;
-		padding: 0.35rem;
-		box-shadow:
-			0 0 18px rgba(16, 185, 129, 0.1),
-			0 0 50px rgba(16, 185, 129, 0.03);
+		width: fit-content;
+		border-radius: 2rem 2rem 1.35rem 1.35rem;
+		border: 4px solid #13796f;
+		background: #28d7a3;
+		padding: 1.95rem 0.48rem 0.48rem;
+		box-shadow: 0 7px 0 #0d5c55, 0 12px 0 rgb(0 0 0 / 0.16);
+	}
+
+	.board-frame::before {
+		content: "";
+		position: absolute;
+		top: 0.48rem;
+		left: 50%;
+		width: 78%;
+		height: 1.15rem;
+		border-radius: 999px;
+		background:
+			radial-gradient(circle at 18% 50%, #143d41 0 0.18rem, transparent 0.2rem),
+			radial-gradient(circle at 82% 50%, #143d41 0 0.18rem, transparent 0.2rem),
+			linear-gradient(90deg, transparent 0 52%, #e9fff6 52% 90%, transparent 90%);
+		transform: translateX(-50%);
+	}
+
+	.board-frame::after {
+		content: "";
+		position: absolute;
+		top: 1.55rem;
+		left: 50%;
+		z-index: 1;
+		width: 46%;
+		height: 1.1rem;
+		background:
+			radial-gradient(circle at 16% 0, #fff6d7 0 0.42rem, transparent 0.44rem),
+			radial-gradient(circle at 84% 0, #fff6d7 0 0.42rem, transparent 0.44rem);
+		transform: translateX(-50%);
+		pointer-events: none;
 	}
 
 	.board-canvas {
-		width: min(
-			calc((100svh - 11rem) / 2),
-			220px,
-			calc(100vw - 130px)
-		);
+		width: clamp(9.25rem, min(calc(100vw - 6.2rem), calc((100svh - 11.25rem) / 2.38)), 17.25rem);
+		border: 4px solid #13796f;
+		border-radius: 0.9rem;
+		background: #9f493d;
+		image-rendering: pixelated;
+		image-rendering: crisp-edges;
 	}
 
 	.game-overlay {
 		position: absolute;
-		inset: 0.35rem;
+		inset: 2.5rem 0.95rem 0.95rem;
 		display: grid;
 		place-content: center;
 		gap: 0.3rem;
-		border-radius: calc(0.85rem - 0.35rem);
-		background: rgba(7, 31, 26, 0.92);
+		border-radius: 0.75rem;
+		background: rgb(120 48 41 / 0.78);
+		color: #fff6d7;
 		text-align: center;
 		backdrop-filter: blur(4px);
 		transition: opacity 180ms ease;
@@ -647,19 +705,33 @@ import {
 		pointer-events: none;
 	}
 
-	/* ── Sidebar ── */
+	/* ── HUD badges ── */
 
 	.sidebar {
-		flex: 0 0 auto;
-		width: 100px;
-		display: flex;
-		flex-direction: column;
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		width: 100%;
+		display: block;
+		border: 0;
+		background: transparent;
+		color: #1f4f55;
+		padding: 0;
+		overflow: visible;
+		box-shadow: none;
+		pointer-events: none;
+	}
+
+	.sidebar > .sidebar-section:first-child {
+		position: absolute;
+		top: 2.35rem;
+		right: -0.65rem;
+		width: 3.15rem;
+		border: 3px solid #7a493d;
 		border-radius: 0.85rem;
-		border: 1px solid rgba(16, 185, 129, 0.1);
-		background: rgba(16, 185, 129, 0.025);
-		padding: 0.5rem;
-		backdrop-filter: blur(6px);
-		overflow: hidden;
+		background: #fb7562;
+		padding: 0.25rem;
+		box-shadow: 0 4px 0 #7a493d;
 	}
 
 	.sidebar-section {
@@ -667,118 +739,182 @@ import {
 		flex-direction: column;
 		align-items: center;
 		gap: 0.2rem;
-		padding: 0.3rem 0;
-	}
-
-	.sidebar-actions {
-		gap: 0.35rem;
 	}
 
 	.sidebar-divider {
-		height: 1px;
-		background: rgba(16, 185, 129, 0.07);
-		margin: 0.1rem 0;
+		display: none;
 	}
 
 	.sidebar-label {
 		font-size: 0.5rem;
 		font-weight: 900;
 		text-transform: uppercase;
-		letter-spacing: 0.12em;
-		color: rgba(52, 211, 153, 0.4);
+		letter-spacing: 0.1em;
+		color: #7a493d;
 	}
 
 	.next-canvas {
 		width: 100%;
+		max-width: 2.45rem;
 		height: auto;
 		aspect-ratio: 1;
+		border: 0;
+		background: #9f493d;
 		image-rendering: pixelated;
 		image-rendering: crisp-edges;
 	}
 
 	.stats-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 0.15rem 0.25rem;
-		width: 100%;
-		padding: 0.2rem 0;
+		position: static;
+		display: contents;
 	}
 
 	.stat-item {
+		position: absolute;
+		width: 3.15rem;
+		border: 2px solid #7a493d;
+		border-radius: 0.85rem;
+		background: #ffd85c;
 		text-align: center;
-		padding: 0.15rem 0;
+		padding: 0.28rem 0.16rem;
+		box-shadow: 0 4px 0 #7a493d;
+	}
+
+	.stat-item:nth-child(1) {
+		top: 2.35rem;
+		left: -0.65rem;
+	}
+
+	.stat-item:nth-child(2) {
+		top: 6.4rem;
+		left: -0.65rem;
+	}
+
+	.stat-item:nth-child(3) {
+		right: -0.65rem;
+		top: 7.55rem;
+		background: #fb7562;
+		color: #fff6d7;
+	}
+
+	.stat-item:nth-child(4) {
+		left: -0.65rem;
+		top: 10.45rem;
+		background: #45d5c8;
 	}
 
 	.stat-label {
 		display: block;
-		font-size: 0.45rem;
+		font-size: clamp(0.4rem, 1.75vw, 0.52rem);
 		font-weight: 900;
 		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: rgba(52, 211, 153, 0.4);
+		letter-spacing: 0;
+		color: #7a493d;
 	}
 
 	.stat-value {
 		display: block;
-		font-size: 0.85rem;
+		font-family: var(--font-mono);
+		font-size: clamp(0.9rem, 4.3vw, 1.2rem);
 		font-weight: 700;
 		font-variant-numeric: tabular-nums;
 		line-height: 1.2;
 	}
 
 	.keyboard-hint {
-		margin-top: auto;
-		padding-top: 0.4rem;
-		font-size: 0.5rem;
+		position: absolute;
+		bottom: -1.6rem;
+		left: 50%;
+		width: max-content;
+		margin: 0;
+		font-size: 0.54rem;
 		line-height: 1.45;
 		text-align: center;
-		color: rgba(52, 211, 153, 0.2);
+		color: #1f7774;
+		transform: translateX(-50%);
 	}
 
 	/* ── Controls ── */
 
 	.controls-bar {
-		padding: 0.2rem;
-		border-radius: 0.85rem;
-		background: rgba(10, 31, 26, 0.8);
-		backdrop-filter: blur(14px);
-		border: 1px solid rgba(16, 185, 129, 0.06);
+		width: 100%;
+		margin-top: 0.55rem;
+		padding: 0.42rem;
+		border-radius: 1.75rem 1.75rem 0.9rem 0.9rem;
+		background: #fff6d7;
+		border: 4px solid #13796f;
+		box-shadow: 0 6px 0 #13796f;
+	}
+
+	.controls-pad {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		grid-template-rows: repeat(2, clamp(1.9rem, 5.4svh, 2.35rem));
+		gap: 0.3rem;
 	}
 
 	.ctrl-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: 2.75rem;
-		border-radius: 0.6rem;
-		border: 1px solid rgba(16, 185, 129, 0.08);
-		background: rgba(16, 185, 129, 0.04);
-		color: rgba(110, 231, 183, 0.7);
+		min-width: 0;
+		min-height: 0;
+		border-radius: 1rem;
+		border: 3px solid #7a493d;
+		background: #62c7ff;
+		color: #173e45;
+		box-shadow: inset 0 -4px 0 rgb(0 0 0 / 0.14), 0 3px 0 #7a493d;
 		cursor: pointer;
 		transition: all 80ms ease;
 		-webkit-tap-highlight-color: transparent;
 	}
 
+	.ctrl-btn[data-action="left"] {
+		grid-column: 1;
+		grid-row: 1 / span 2;
+		border-radius: 1.4rem 0.85rem 0.85rem 1.4rem;
+	}
+
+	.ctrl-rotate {
+		grid-column: 3;
+		grid-row: 1;
+		background: #45d5c8;
+	}
+
+	.ctrl-btn[data-action="right"] {
+		grid-column: 2;
+		grid-row: 1 / span 2;
+		border-radius: 0.85rem 1.4rem 1.4rem 0.85rem;
+	}
+
+	.ctrl-btn[data-action="down"] {
+		grid-column: 3;
+		grid-row: 2;
+	}
+
 	.ctrl-btn:hover {
-		background: rgba(16, 185, 129, 0.08);
-		color: rgba(110, 231, 183, 0.9);
+		background: #45d5c8;
+		color: #173e45;
 	}
 
 	.ctrl-btn:active {
-		background: rgba(16, 185, 129, 0.15);
-		box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
-		transform: translateY(1px);
+		background: #ffd85c;
+		color: #173e45;
+		box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.12), 0 1px 0 #7a493d;
+		transform: translateY(2px);
 	}
 
 	.ctrl-btn-accent {
-		border-color: rgba(16, 185, 129, 0.12);
-		background: rgba(16, 185, 129, 0.06);
-		color: rgba(167, 243, 208, 0.8);
+		grid-column: 4 / span 2;
+		grid-row: 1 / span 2;
+		border-radius: 1.4rem;
+		background: #ffd85c;
+		color: #173e45;
 	}
 
 	.ctrl-icon {
-		width: 1.15rem;
-		height: 1.15rem;
+		width: clamp(1.35rem, 5vw, 1.7rem);
+		height: clamp(1.35rem, 5vw, 1.7rem);
 	}
 
 	/* ── Panels ── */
@@ -792,104 +928,40 @@ import {
 
 	@keyframes bump {
 		0% { transform: scale(1); }
-		50% { transform: scale(1.15); color: #34d399; }
+		50% { transform: scale(1.15); color: color-mix(in oklch, var(--primary) 72%, var(--foreground)); }
 		100% { transform: scale(1); }
 	}
 
 	:global(.bump) { animation: bump 200ms ease; }
 
-	/* ── Responsive: small (< 640px) ── */
-
-	@media (max-width: 639px) {
-		.btn-label { display: none; }
-		.keyboard-hint { display: none; }
-	}
-
 	/* ── Responsive: short screens ── */
 
-	@media (max-height: 640px) {
+	@media (max-height: 740px) {
+		.game-wrapper { gap: 0.45rem; }
+
+		.game-header { padding-block: 0; }
+
 		.board-canvas {
-			width: min(calc((100svh - 9rem) / 2), 180px, calc(100vw - 120px));
+			width: clamp(8.75rem, min(calc(100vw - 6.2rem), calc((100svh - 10.6rem) / 2.42)), 15.5rem);
 		}
 
-		.sidebar { width: 85px; padding: 0.35rem; }
-		.ctrl-btn { height: 2.25rem; }
-		.stat-value { font-size: 0.75rem; }
+		.keyboard-hint { display: none; }
+		.controls-bar { margin-top: 0.45rem; padding: 0.35rem; }
+		.controls-pad {
+			grid-template-rows: repeat(2, clamp(1.75rem, 5svh, 2.1rem));
+		}
 	}
 
-	/* ── Responsive: sm (640px+) ── */
+	@media (max-width: 374px) {
+		.game-layout { padding-inline: 1.85rem; }
 
-	@media (min-width: 640px) {
-		.game-layout { gap: 0.65rem; }
-
-		.board-frame {
-			border-radius: 1rem;
-			padding: 0.45rem;
+		.stat-item,
+		.sidebar > .sidebar-section:first-child {
+			width: 2.75rem;
 		}
-
-		.board-canvas {
-			width: min(calc((100svh - 10rem) / 2), 250px);
-		}
-
-		.game-overlay { inset: 0.45rem; }
-
-		.sidebar {
-			width: 140px;
-			padding: 0.65rem;
-			border-radius: 1rem;
-		}
-
-		.sidebar-label, .stat-label { font-size: 0.55rem; }
-		.stat-value { font-size: 1rem; }
-
-		.stats-grid { gap: 0.2rem 0.35rem; }
-
-		.ctrl-btn { height: 3rem; }
-		.ctrl-icon { width: 1.3rem; height: 1.3rem; }
-
-		.controls-bar { padding: 0.25rem; border-radius: 1rem; }
-	}
-
-	/* ── Responsive: md (768px+) ── */
-
-	@media (min-width: 768px) {
-		.game-layout { gap: 0.85rem; }
-
-		.board-frame { padding: 0.5rem; border-radius: 1.1rem; }
-
-		.board-canvas {
-			width: min(calc((100svh - 9rem) / 2), 280px);
-		}
-
-		.game-overlay { inset: 0.5rem; }
-
-		.sidebar {
-			width: 170px;
-			padding: 0.85rem;
-			border-radius: 1.1rem;
-		}
-
-		.sidebar-section { padding: 0.4rem 0; gap: 0.3rem; }
-		.sidebar-label { font-size: 0.6rem; }
-		.stat-label { font-size: 0.6rem; }
-		.stat-value { font-size: 1.15rem; }
-		.stats-grid { gap: 0.3rem 0.5rem; }
-
-		.ctrl-btn { height: 3.25rem; }
-		.ctrl-icon { width: 1.4rem; height: 1.4rem; }
-	}
-
-	/* ── Responsive: lg (1024px+) ── */
-
-	@media (min-width: 1024px) {
-		.board-canvas {
-			width: min(calc((100svh - 8rem) / 2), 300px);
-		}
-
-		.sidebar { width: 190px; padding: 1rem; }
-		.stat-value { font-size: 1.3rem; }
-		.stats-grid { gap: 0.35rem 0.6rem; }
-
-		.ctrl-btn { height: 3.5rem; }
+		.sidebar-label { font-size: 0.45rem; }
+		.next-canvas { max-width: 2.1rem; }
+		.btn-label { display: none; }
+		.keyboard-hint { display: none; }
 	}
 </style>
