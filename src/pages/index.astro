@@ -2,18 +2,7 @@
 import "../styles/global.css"
 
 import { Button } from "@/components/ui/button"
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import {
 	ArrowDown,
 	ArrowLeft,
@@ -22,8 +11,10 @@ import {
 	Pause,
 	Play,
 	RotateCw,
-	Send,
 	Settings,
+	ShieldCheck,
+	Smartphone,
+	UserRoundPlus,
 	X,
 } from "@lucide/astro"
 ---
@@ -121,37 +112,61 @@ import {
 		</div>
 
 		<aside class="settings-panel fixed inset-0 z-40 grid place-items-end bg-black/50 p-3 opacity-0 backdrop-blur-sm transition-opacity sm:p-4" id="settingsPanel" aria-hidden="true">
-			<div class="settings-card w-full max-w-md translate-y-4 rounded-2xl border-2 border-border bg-card p-4 text-card-foreground shadow-2xl transition-transform sm:p-5">
-				<div class="mb-4 flex items-center justify-between">
-					<h2 class="text-lg font-bold">Configurações</h2>
-					<Button id="closeSettingsButton" type="button" variant="ghost" size="sm" class="text-foreground hover:bg-accent hover:text-accent-foreground">
+			<section class="settings-card max-h-[calc(100svh-1.5rem)] w-full max-w-md translate-y-4 overflow-y-auto rounded-2xl border-2 border-border bg-card p-4 text-card-foreground shadow-2xl transition-transform sm:p-5" aria-labelledby="settingsTitle">
+				<div class="mb-5 flex items-start justify-between gap-4">
+					<div>
+						<p class="text-sm font-semibold text-[#22655f]">Sua rede de apoio</p>
+						<h2 id="settingsTitle" class="mt-1 text-xl font-bold">Pessoas de confiança</h2>
+					</div>
+					<Button id="closeSettingsButton" type="button" variant="ghost" size="sm" class="shrink-0 text-foreground hover:bg-accent hover:text-accent-foreground">
 						<X class="size-4" /> Fechar
 					</Button>
 				</div>
-				<Dialog>
-					<DialogTrigger id="reportButton" type="button" class="w-full border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">Reportar problema</DialogTrigger>
-					<DialogContent>
-						<form id="reportForm" class="grid gap-4">
-							<DialogHeader>
-								<DialogTitle>Reportar problema</DialogTitle>
-								<DialogDescription>Descreva o que aconteceu para ajudar a melhorar.</DialogDescription>
-							</DialogHeader>
-							<div class="grid gap-2">
-								<Label for="reportMessage">Mensagem</Label>
-								<Textarea id="reportMessage" name="message" rows={4} placeholder="Ex.: a peça travou na tela" required />
-								<p class="text-xs text-muted-foreground">Ao enviar, o navegador pode pedir permissão de localização.</p>
-							</div>
-							<DialogFooter>
-								<DialogClose id="cancelReportButton" type="button" variant="outline">Cancelar</DialogClose>
-								<DialogClose id="reportCloseButton" type="button" class="hidden">Fechar</DialogClose>
-								<Button type="submit" class="border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">
-									<Send class="size-4" /> Enviar
-								</Button>
-							</DialogFooter>
-						</form>
-					</DialogContent>
-				</Dialog>
-			</div>
+
+				<div class="rounded-xl bg-[#e3f5ed] p-4 text-[#174b45]">
+					<div class="flex gap-3">
+						<ShieldCheck class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+						<p class="text-sm leading-5">Os nomes e telefones ficam somente neste aparelho. Nesta etapa, nada será enviado por mensagem, e-mail ou outro serviço.</p>
+					</div>
+				</div>
+
+				<form id="trustedContactForm" class="mt-5 grid gap-4">
+					<div class="grid gap-2">
+						<Label for="contactName">Nome</Label>
+						<input id="contactName" name="name" autocomplete="name" required maxlength="80" placeholder="Ex.: Ana Souza" class="h-10 rounded-md border-2 border-border bg-background px-3 text-sm outline-none transition focus:border-primary" />
+					</div>
+					<div class="grid gap-2">
+						<Label for="contactRelationship">Relação <span class="font-normal text-muted-foreground">(opcional)</span></Label>
+						<input id="contactRelationship" name="relationship" maxlength="50" placeholder="Ex.: irmã, amiga, vizinha" class="h-10 rounded-md border-2 border-border bg-background px-3 text-sm outline-none transition focus:border-primary" />
+					</div>
+					<div class="grid gap-2">
+						<Label for="contactPhone">Telefone</Label>
+						<input id="contactPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="30" placeholder="(00) 00000-0000" class="h-10 rounded-md border-2 border-border bg-background px-3 text-sm outline-none transition focus:border-primary" />
+					</div>
+					<Button type="submit" class="border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">
+						<UserRoundPlus class="size-4" /> Adicionar pessoa
+					</Button>
+				</form>
+
+				<div class="mt-6 border-t-2 border-border pt-5">
+					<div class="flex items-baseline justify-between gap-4">
+						<h3 class="font-bold">Pessoas configuradas</h3>
+						<span id="contactCount" class="text-sm text-muted-foreground">0 pessoas</span>
+					</div>
+					<ul id="trustedContactsList" class="mt-3 grid gap-2" aria-live="polite"></ul>
+					<p id="emptyContacts" class="mt-3 rounded-xl bg-muted px-4 py-3 text-sm leading-5 text-muted-foreground">Adicione alguém em quem você confia para deixar a sua rede de apoio pronta.</p>
+				</div>
+
+				<div class="mt-6 border-t-2 border-border pt-5">
+					<div class="flex gap-3">
+						<Smartphone class="mt-0.5 size-5 shrink-0 text-[#22655f]" aria-hidden="true" />
+						<div>
+							<h3 class="font-bold">SOS nativo do celular</h3>
+							<p class="mt-1 text-sm leading-5 text-muted-foreground">Ative o recurso de emergência nas configurações do Android ou iPhone e cadastre os mesmos contatos. Por segurança, navegadores não podem ativar nem disparar o SOS do sistema.</p>
+						</div>
+					</div>
+				</div>
+			</section>
 		</aside>
 
 		<div class="toast fixed bottom-5 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full border-2 border-border bg-card px-5 py-2.5 text-sm font-bold text-card-foreground opacity-0 shadow-lg transition" id="toast" role="status" aria-live="polite"></div>
@@ -168,10 +183,10 @@ import {
 			const settingsButton = document.querySelector<HTMLElement>('#settingsButton')!;
 			const closeSettingsButton = document.querySelector<HTMLElement>('#closeSettingsButton')!;
 			const settingsPanel = document.querySelector<HTMLElement>('#settingsPanel')!;
-			const reportButton = document.querySelector<HTMLElement>('#reportButton')!;
-			const reportCloseButton = document.querySelector<HTMLElement>('#reportCloseButton')!;
-			const reportForm = document.querySelector<HTMLFormElement>('#reportForm')!;
-			const reportMessage = document.querySelector<HTMLTextAreaElement>('#reportMessage')!;
+			const trustedContactForm = document.querySelector<HTMLFormElement>('#trustedContactForm')!;
+			const trustedContactsList = document.querySelector<HTMLUListElement>('#trustedContactsList')!;
+			const emptyContacts = document.querySelector<HTMLElement>('#emptyContacts')!;
+			const contactCount = document.querySelector<HTMLElement>('#contactCount')!;
 			const toast = document.querySelector<HTMLElement>('#toast')!;
 
 			const COLS = 10;
@@ -200,6 +215,16 @@ import {
 				[[7, 7, 0], [0, 7, 7]],
 			];
 
+			type TrustedContact = { id: string; name: string; relationship: string; phone: string };
+			let trustedContacts: TrustedContact[] = [];
+
+			try {
+				const storedContacts = localStorage.getItem('defesa-da-mulher-trusted-contacts');
+				trustedContacts = storedContacts ? JSON.parse(storedContacts) : [];
+				if (!Array.isArray(trustedContacts)) trustedContacts = [];
+			} catch {}
+
+
 			let arena = createArena();
 			let player = { matrix: null as number[][] | null, x: 0, y: 0 };
 			let nextPiece: number[][] | null = null;
@@ -211,7 +236,6 @@ import {
 			let lastTime = 0;
 			let running = false;
 			let paused = false;
-
 			try { highScore = parseInt(localStorage.getItem('blocos-high') || '0', 10); } catch {}
 			highScoreEl.textContent = String(highScore);
 
@@ -503,18 +527,48 @@ import {
 				settingsPanel.setAttribute('aria-hidden', String(!open));
 			}
 
-			function getCurrentPosition(): Promise<GeolocationPosition> {
-				return new Promise((resolve, reject) => {
-					if (!('geolocation' in navigator)) {
-						reject(new Error('Geolocalização indisponível.'));
-						return;
-					}
-					navigator.geolocation.getCurrentPosition(resolve, reject, {
-						enableHighAccuracy: true,
-						timeout: 12000,
-						maximumAge: 0,
+			function saveTrustedContacts() {
+				try {
+					localStorage.setItem('defesa-da-mulher-trusted-contacts', JSON.stringify(trustedContacts));
+				} catch {
+					showToast('Não foi possível salvar neste aparelho.');
+				}
+			}
+
+			function renderTrustedContacts() {
+				trustedContactsList.replaceChildren();
+				emptyContacts.hidden = trustedContacts.length > 0;
+				contactCount.textContent = `${trustedContacts.length} ${trustedContacts.length === 1 ? 'pessoa' : 'pessoas'}`;
+
+				for (const contact of trustedContacts) {
+					const item = document.createElement('li');
+					item.className = 'flex items-center justify-between gap-3 rounded-xl border-2 border-border bg-background px-3 py-3';
+
+					const details = document.createElement('div');
+					details.className = 'min-w-0';
+					const name = document.createElement('p');
+					name.className = 'truncate font-bold';
+					name.textContent = contact.name;
+					const meta = document.createElement('p');
+					meta.className = 'mt-0.5 truncate text-sm text-muted-foreground';
+					meta.textContent = [contact.relationship, contact.phone].filter(Boolean).join(' · ');
+					details.append(name, meta);
+
+					const removeButton = document.createElement('button');
+					removeButton.type = 'button';
+					removeButton.className = 'inline-flex size-9 shrink-0 items-center justify-center rounded-md text-destructive transition hover:bg-destructive hover:text-destructive-foreground focus:outline-none focus:ring-2 focus:ring-ring';
+					removeButton.setAttribute('aria-label', `Remover ${contact.name}`);
+					removeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+					removeButton.addEventListener('click', () => {
+						trustedContacts = trustedContacts.filter(item => item.id !== contact.id);
+						saveTrustedContacts();
+						renderTrustedContacts();
+						showToast('Pessoa removida da sua rede de apoio.');
 					});
-				});
+
+					item.append(details, removeButton);
+					trustedContactsList.append(item);
+				}
 			}
 
 			startButton.addEventListener('click', startGame);
@@ -544,32 +598,23 @@ import {
 			settingsButton.addEventListener('click', () => setSettings(true));
 			closeSettingsButton.addEventListener('click', () => setSettings(false));
 			settingsPanel.addEventListener('click', (e) => { if (e.target === settingsPanel) setSettings(false); });
-			reportButton.addEventListener('click', () => setSettings(false));
 
-			reportForm.addEventListener('submit', async (e) => {
+			trustedContactForm.addEventListener('submit', (e) => {
 				e.preventDefault();
-				const message = reportMessage.value.trim();
-				if (!message) return;
-				try {
-					const position = await getCurrentPosition();
-					const { latitude, longitude, accuracy } = position.coords;
-					console.info('[game-report]', {
-						message, timestamp: new Date().toISOString(),
-						location: { latitude, longitude, accuracy, mapsUrl: `https://maps.google.com/?q=${latitude},${longitude}` },
-					});
-					showToast('Relatório enviado. Obrigado!');
-				} catch (error) {
-					console.info('[game-report]', {
-						message, timestamp: new Date().toISOString(),
-						locationError: error instanceof Error ? error.message : String(error),
-					});
-					showToast('Relatório enviado sem localização.');
-				} finally {
-					reportForm.reset();
-					reportCloseButton.click();
-				}
+				const formData = new FormData(trustedContactForm);
+				const name = String(formData.get('name') ?? '').trim();
+				const relationship = String(formData.get('relationship') ?? '').trim();
+				const phone = String(formData.get('phone') ?? '').trim();
+				if (!name || !phone) return;
+
+				trustedContacts.push({ id: crypto.randomUUID(), name, relationship, phone });
+				saveTrustedContacts();
+				renderTrustedContacts();
+				trustedContactForm.reset();
+				showToast('Pessoa adicionada à sua rede de apoio.');
 			});
 
+			renderTrustedContacts();
 			draw();
 			drawNext();
 			requestAnimationFrame(update);
