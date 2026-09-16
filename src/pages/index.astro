@@ -2,6 +2,16 @@
 import "../styles/global.css"
 
 import { Button } from "@/components/ui/button"
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -9,7 +19,6 @@ import {
 	ArrowLeft,
 	ArrowRight,
 	ChevronsDown,
-	HeartHandshake,
 	Pause,
 	Play,
 	RotateCw,
@@ -113,75 +122,86 @@ import {
 			</div>
 		</div>
 
-		<aside class="settings-panel fixed inset-0 z-40 grid place-items-end bg-black/50 p-3 opacity-0 backdrop-blur-sm transition-opacity sm:p-4" id="settingsPanel" aria-hidden="true">
-			<section class="settings-card max-h-[calc(100svh-1.5rem)] w-full max-w-md translate-y-4 overflow-y-auto rounded-2xl border-2 border-border bg-card p-4 text-card-foreground shadow-2xl transition-transform sm:p-5" aria-labelledby="settingsTitle">
-				<div class="mb-5 flex items-start justify-between gap-4">
-					<div>
-						<p class="text-sm font-semibold text-[#22655f]">Sua rede de apoio</p>
-						<h2 id="settingsTitle" class="mt-1 text-xl font-bold">Pessoas de confiança</h2>
-					</div>
-					<Button id="closeSettingsButton" type="button" variant="ghost" size="sm" class="shrink-0 text-foreground hover:bg-accent hover:text-accent-foreground">
-						<X class="size-4" /> Fechar
-					</Button>
-				</div>
-
-				<div class="rounded-xl bg-[#e3f5ed] p-4 text-[#174b45]">
-					<div class="flex gap-3">
-						<ShieldCheck class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
-						<p class="text-sm leading-5">Os nomes e telefones ficam somente neste aparelho. Nesta etapa, nada será enviado por mensagem, e-mail ou outro serviço.</p>
-					</div>
-				</div>
-
-				<form id="trustedContactForm" class="mt-5 grid gap-4">
-					<p class="text-sm text-muted-foreground">Cadastre até 3 pessoas. Elas recebem o recado quando você pedir apoio.</p>
-					<div class="grid gap-2">
-						<Label for="contactName">Nome</Label>
-						<input id="contactName" name="name" autocomplete="name" required maxlength="80" placeholder="Ex.: Ana Souza" class="h-10 rounded-md border-2 border-border bg-background px-3 text-sm outline-none transition focus:border-primary" />
-					</div>
-					<div class="grid gap-2">
-						<Label for="contactRelationship">Relação <span class="font-normal text-muted-foreground">(opcional)</span></Label>
-						<input id="contactRelationship" name="relationship" maxlength="50" placeholder="Ex.: irmã, amiga, vizinha" class="h-10 rounded-md border-2 border-border bg-background px-3 text-sm outline-none transition focus:border-primary" />
-					</div>
-					<div class="grid gap-2">
-						<Label for="contactPhone">Telefone</Label>
-						<input id="contactPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="30" placeholder="(00) 00000-0000" class="h-10 rounded-md border-2 border-border bg-background px-3 text-sm outline-none transition focus:border-primary" />
-					</div>
-					<Button id="addContactButton" type="submit" class="border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">
-						<UserRoundPlus class="size-4" /> Adicionar pessoa
-					</Button>
-				</form>
-				<p id="contactLimitNotice" hidden class="mt-5 rounded-xl bg-[#fff6d7] px-4 py-3 text-sm leading-5 text-[#174b45]">Rede completa: 3 de 3 pessoas. Remova alguém se quiser cadastrar outra.</p>
-
-				<div class="mt-6 border-t-2 border-border pt-5">
-					<div class="flex items-baseline justify-between gap-4">
-						<h3 class="font-bold">Pessoas configuradas</h3>
-						<span id="contactCount" class="text-sm text-muted-foreground">0 de 3</span>
-					</div>
-					<ul id="trustedContactsList" class="mt-3 grid gap-2" aria-live="polite"></ul>
-					<p id="emptyContacts" class="mt-3 rounded-xl bg-muted px-4 py-3 text-sm leading-5 text-muted-foreground">Adicione até 3 pessoas em quem você confia para deixar a sua rede de apoio pronta.</p>
-				</div>
-
-				<div class="mt-6 border-t-2 border-border pt-5">
-					<div class="flex gap-3">
-						<HeartHandshake class="mt-0.5 size-5 shrink-0 text-[#22655f]" aria-hidden="true" />
+		<Dialog>
+			<aside class="settings-panel fixed inset-0 z-40 grid place-items-end bg-black/50 p-3 opacity-0 backdrop-blur-sm transition-opacity sm:p-4" id="settingsPanel" aria-hidden="true">
+				<section class="settings-card max-h-[calc(100svh-1.5rem)] w-full max-w-md translate-y-4 overflow-y-auto rounded-2xl border-2 border-border bg-card p-4 text-card-foreground shadow-2xl transition-transform sm:p-5" aria-labelledby="settingsTitle">
+					<div class="mb-5 flex items-start justify-between gap-4">
 						<div>
-							<h3 class="font-bold">Como você está?</h3>
-							<p class="mt-1 text-sm leading-5 text-muted-foreground">Escreva um recado para a sua rede. O aparelho só vibra para confirmar o aviso — nada sai por SMS, ligação ou SOS do celular.</p>
+							<p class="text-sm font-semibold text-[#22655f]">Sua rede de apoio</p>
+							<h2 id="settingsTitle" class="mt-1 text-xl font-bold">Configurações</h2>
+						</div>
+						<Button id="closeSettingsButton" type="button" variant="ghost" size="sm" class="shrink-0 text-foreground hover:bg-accent hover:text-accent-foreground">
+							<X class="size-4" /> Fechar
+						</Button>
+					</div>
+
+					<DialogTrigger id="reportButton" type="button" class="w-full border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">
+						Reportar problema
+					</DialogTrigger>
+					<p class="mt-2 text-xs leading-5 text-muted-foreground">Ao enviar, o aparelho pede a localização e só vibra para confirmar. Nada sai por SMS, ligação ou SOS.</p>
+
+					<div class="mt-6 border-t-2 border-border pt-5">
+						<h3 class="font-bold">Pessoas de confiança</h3>
+						<div class="mt-3 rounded-xl bg-[#e3f5ed] p-4 text-[#174b45]">
+							<div class="flex gap-3">
+								<ShieldCheck class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+								<p class="text-sm leading-5">Os nomes e telefones ficam somente neste aparelho. Nesta etapa, nada será enviado por mensagem, e-mail ou outro serviço.</p>
+							</div>
+						</div>
+
+						<form id="trustedContactForm" class="mt-5 grid gap-4">
+							<p class="text-sm text-muted-foreground">Cadastre até 3 pessoas. Elas entram no aviso quando você reporta um problema.</p>
+							<div class="grid gap-2">
+								<Label for="contactName">Nome</Label>
+								<input id="contactName" name="name" autocomplete="name" required maxlength="80" placeholder="Ex.: Ana Souza" class="h-10 rounded-md border-2 border-border bg-background px-3 text-sm outline-none transition focus:border-primary" />
+							</div>
+							<div class="grid gap-2">
+								<Label for="contactRelationship">Relação <span class="font-normal text-muted-foreground">(opcional)</span></Label>
+								<input id="contactRelationship" name="relationship" maxlength="50" placeholder="Ex.: irmã, amiga, vizinha" class="h-10 rounded-md border-2 border-border bg-background px-3 text-sm outline-none transition focus:border-primary" />
+							</div>
+							<div class="grid gap-2">
+								<Label for="contactPhone">Telefone</Label>
+								<input id="contactPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="30" placeholder="(00) 00000-0000" class="h-10 rounded-md border-2 border-border bg-background px-3 text-sm outline-none transition focus:border-primary" />
+							</div>
+							<Button id="addContactButton" type="submit" class="border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">
+								<UserRoundPlus class="size-4" /> Adicionar pessoa
+							</Button>
+						</form>
+						<p id="contactLimitNotice" hidden class="mt-5 rounded-xl bg-[#fff6d7] px-4 py-3 text-sm leading-5 text-[#174b45]">Rede completa: 3 de 3 pessoas. Remova alguém se quiser cadastrar outra.</p>
+
+						<div class="mt-6">
+							<div class="flex items-baseline justify-between gap-4">
+								<h4 class="font-bold">Pessoas configuradas</h4>
+								<span id="contactCount" class="text-sm text-muted-foreground">0 de 3</span>
+							</div>
+							<ul id="trustedContactsList" class="mt-3 grid gap-2" aria-live="polite"></ul>
+							<p id="emptyContacts" class="mt-3 rounded-xl bg-muted px-4 py-3 text-sm leading-5 text-muted-foreground">Adicione até 3 pessoas em quem você confia para deixar a sua rede de apoio pronta.</p>
 						</div>
 					</div>
-					<form id="feedbackForm" class="mt-4 grid gap-3">
-						<div class="grid gap-2">
-							<Label for="feedbackMessage">Seu recado</Label>
-							<Textarea id="feedbackMessage" name="message" rows={4} required maxlength="280" placeholder="Ex.: estou em casa e preciso de alguém por perto." class="min-h-24 rounded-md border-2 border-border bg-background" />
-						</div>
-						<p id="feedbackNeedsContacts" hidden class="rounded-xl bg-muted px-4 py-3 text-sm leading-5 text-muted-foreground">Cadastre pelo menos uma pessoa de confiança para enviar o recado.</p>
-						<Button id="sendFeedbackButton" type="submit" class="border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">
-							<Send class="size-4" /> Avisar pessoas de confiança
+				</section>
+			</aside>
+
+			<DialogContent>
+				<form id="reportForm" class="grid gap-4">
+					<DialogHeader>
+						<DialogTitle>Reportar problema</DialogTitle>
+						<DialogDescription>Descreva o que aconteceu para ajudar a melhorar.</DialogDescription>
+					</DialogHeader>
+					<div class="grid gap-2">
+						<Label for="reportMessage">Mensagem</Label>
+						<Textarea id="reportMessage" name="message" rows={4} required maxlength="280" placeholder="Ex.: a peça travou na tela" class="min-h-24 rounded-md border-2 border-border bg-background" />
+						<p class="text-xs text-muted-foreground">Ao enviar, o navegador pode pedir permissão de localização.</p>
+					</div>
+					<DialogFooter>
+						<DialogClose id="cancelReportButton" type="button" variant="outline">Cancelar</DialogClose>
+						<DialogClose id="reportCloseButton" type="button" class="hidden">Fechar</DialogClose>
+						<Button type="submit" class="border-2 border-border bg-primary font-bold text-primary-foreground hover:bg-secondary hover:text-secondary-foreground">
+							<Send class="size-4" /> Enviar
 						</Button>
-					</form>
-				</div>
-			</section>
-		</aside>
+					</DialogFooter>
+				</form>
+			</DialogContent>
+		</Dialog>
 
 		<div class="toast fixed bottom-5 left-1/2 z-50 -translate-x-1/2 translate-y-4 rounded-full border-2 border-border bg-card px-5 py-2.5 text-sm font-bold text-card-foreground opacity-0 shadow-lg transition" id="toast" role="status" aria-live="polite"></div>
 
@@ -202,10 +222,10 @@ import {
 			const emptyContacts = document.querySelector<HTMLElement>('#emptyContacts')!;
 			const contactCount = document.querySelector<HTMLElement>('#contactCount')!;
 			const contactLimitNotice = document.querySelector<HTMLElement>('#contactLimitNotice')!;
-			const feedbackForm = document.querySelector<HTMLFormElement>('#feedbackForm')!;
-			const feedbackMessage = document.querySelector<HTMLTextAreaElement>('#feedbackMessage')!;
-			const sendFeedbackButton = document.querySelector<HTMLButtonElement>('#sendFeedbackButton')!;
-			const feedbackNeedsContacts = document.querySelector<HTMLElement>('#feedbackNeedsContacts')!;
+			const reportButton = document.querySelector<HTMLElement>('#reportButton')!;
+			const reportCloseButton = document.querySelector<HTMLElement>('#reportCloseButton')!;
+			const reportForm = document.querySelector<HTMLFormElement>('#reportForm')!;
+			const reportMessage = document.querySelector<HTMLTextAreaElement>('#reportMessage')!;
 			const toast = document.querySelector<HTMLElement>('#toast')!;
 			const MAX_TRUSTED_CONTACTS = 3;
 
@@ -567,10 +587,20 @@ import {
 				contactLimitNotice.hidden = !atLimit;
 				emptyContacts.hidden = hasContacts;
 				contactCount.textContent = `${count} de ${MAX_TRUSTED_CONTACTS}`;
+			}
 
-				sendFeedbackButton.disabled = !hasContacts;
-				feedbackMessage.disabled = !hasContacts;
-				feedbackNeedsContacts.hidden = hasContacts;
+			function getCurrentPosition(): Promise<GeolocationPosition> {
+				return new Promise((resolve, reject) => {
+					if (!('geolocation' in navigator)) {
+						reject(new Error('Geolocalização indisponível.'));
+						return;
+					}
+					navigator.geolocation.getCurrentPosition(resolve, reject, {
+						enableHighAccuracy: true,
+						timeout: 12000,
+						maximumAge: 0,
+					});
+				});
 			}
 
 			function vibrateNotify() {
@@ -630,12 +660,17 @@ import {
 			});
 
 			document.addEventListener('keydown', (e) => {
-				if (e.key === 'Escape' && settingsPanel.classList.contains('open')) {
-					setSettings(false);
-					return;
+				const reportOpen = Boolean(document.querySelector('[data-slot="dialog-content"]:not([hidden])'));
+				if (e.key === 'Escape') {
+					if (reportOpen) return;
+					if (settingsPanel.classList.contains('open')) {
+						setSettings(false);
+						return;
+					}
 				}
 
 				const target = e.target;
+				if (reportOpen) return;
 				if (target instanceof HTMLElement && target.closest('input, textarea, [contenteditable="true"]')) return;
 
 				if (['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', ' '].includes(e.key)) e.preventDefault();
@@ -650,6 +685,7 @@ import {
 			settingsButton.addEventListener('click', () => setSettings(true));
 			closeSettingsButton.addEventListener('click', () => setSettings(false));
 			settingsPanel.addEventListener('click', (e) => { if (e.target === settingsPanel) setSettings(false); });
+			reportButton.addEventListener('click', () => setSettings(false));
 
 			trustedContactForm.addEventListener('submit', (e) => {
 				e.preventDefault();
@@ -674,26 +710,34 @@ import {
 					: 'Pessoa adicionada à sua rede de apoio.');
 			});
 
-			feedbackForm.addEventListener('submit', (e) => {
+			reportForm.addEventListener('submit', async (e) => {
 				e.preventDefault();
-				const message = feedbackMessage.value.trim();
+				const message = reportMessage.value.trim();
 				if (!message) return;
-				if (trustedContacts.length === 0) {
-					showToast('Cadastre pelo menos uma pessoa de confiança.');
-					updateSupportState();
-					return;
+
+				try {
+					const position = await getCurrentPosition();
+					const { latitude, longitude, accuracy } = position.coords;
+					console.info('[game-report]', {
+						message,
+						timestamp: new Date().toISOString(),
+						location: { latitude, longitude, accuracy, mapsUrl: `https://maps.google.com/?q=${latitude},${longitude}` },
+						contacts: trustedContacts.map(({ name, relationship, phone }) => ({ name, relationship, phone })),
+					});
+					showToast('Relatório enviado. Obrigado!');
+				} catch (error) {
+					console.info('[game-report]', {
+						message,
+						timestamp: new Date().toISOString(),
+						locationError: error instanceof Error ? error.message : String(error),
+						contacts: trustedContacts.map(({ name, relationship, phone }) => ({ name, relationship, phone })),
+					});
+					showToast('Relatório enviado sem localização.');
+				} finally {
+					vibrateNotify();
+					reportForm.reset();
+					reportCloseButton.click();
 				}
-
-				console.info('[support-feedback]', {
-					message,
-					timestamp: new Date().toISOString(),
-					contacts: trustedContacts.map(({ name, relationship, phone }) => ({ name, relationship, phone })),
-				});
-
-				vibrateNotify();
-				feedbackForm.reset();
-				updateSupportState();
-				setSettings(false);
 			});
 
 			renderTrustedContacts();
